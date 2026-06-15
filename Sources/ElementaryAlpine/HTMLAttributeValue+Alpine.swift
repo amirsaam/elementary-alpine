@@ -65,6 +65,62 @@ public extension HTMLAttributeValue.Alpine.OnModifier {
         appending(modifier: "capture")
     }
 
+    consuming func shift() -> Self {
+        appending(modifier: "shift")
+    }
+
+    consuming func ctrl() -> Self {
+        appending(modifier: "ctrl")
+    }
+
+    consuming func alt() -> Self {
+        appending(modifier: "alt")
+    }
+
+    consuming func meta() -> Self {
+        appending(modifier: "meta")
+    }
+
+    consuming func cmd() -> Self {
+        appending(modifier: "cmd")
+    }
+
+    consuming func enter() -> Self {
+        appending(modifier: "enter")
+    }
+
+    consuming func escape() -> Self {
+        appending(modifier: "escape")
+    }
+
+    consuming func space() -> Self {
+        appending(modifier: "space")
+    }
+
+    consuming func tab() -> Self {
+        appending(modifier: "tab")
+    }
+
+    consuming func capsLock() -> Self {
+        appending(modifier: "caps-lock")
+    }
+
+    consuming func up() -> Self {
+        appending(modifier: "up")
+    }
+
+    consuming func down() -> Self {
+        appending(modifier: "down")
+    }
+
+    consuming func left() -> Self {
+        appending(modifier: "left")
+    }
+
+    consuming func right() -> Self {
+        appending(modifier: "right")
+    }
+
     internal consuming func appending(modifier: String) -> Self {
         rawValue += "."
         rawValue += modifier
