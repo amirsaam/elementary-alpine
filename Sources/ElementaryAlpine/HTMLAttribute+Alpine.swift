@@ -62,4 +62,40 @@ extension HTMLAttribute.x {
     public static func `for`(_ value: String) -> HTMLAttribute {
         .init(name: "x-for", value: value)
     }
+
+    public static var transition: HTMLAttribute {
+        .init(name: "x-transition", value: nil)
+    }
+
+    public static func transitionEnter(_ value: String) -> HTMLAttribute {
+        .init(name: "x-transition:enter", value: value)
+    }
+
+    public static func transitionEnterStart(_ value: String) -> HTMLAttribute {
+        .init(name: "x-transition:enter-start", value: value)
+    }
+
+    public static func transitionEnterEnd(_ value: String) -> HTMLAttribute {
+        .init(name: "x-transition:enter-end", value: value)
+    }
+
+    public static func transitionLeave(_ value: String) -> HTMLAttribute {
+        .init(name: "x-transition:leave", value: value)
+    }
+
+    public static func transitionLeaveStart(_ value: String) -> HTMLAttribute {
+        .init(name: "x-transition:leave-start", value: value)
+    }
+
+    public static func transitionLeaveEnd(_ value: String) -> HTMLAttribute {
+        .init(name: "x-transition:leave-end", value: value)
+    }
+
+    public static var transitionScale: HTMLAttribute {
+        .init(name: "x-transition.scale", value: nil)
+    }
+
+    public static var transitionOpacity: HTMLAttribute {
+        .init(name: "x-transition.opacity", value: nil)
+    }
 }
