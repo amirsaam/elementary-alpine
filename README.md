@@ -62,14 +62,16 @@ div(.x.show("open"), .x.transition) { "Content" }
 
 ## Including Alpine.js
 
-This package generates AlpineJS HTML attributes — it does not bundle the Alpine.js runtime. You must include it yourself in your page `<head>`:
+This package generates AlpineJS HTML attributes — it does not bundle the Alpine.js runtime. You must include it yourself in your page `<head>`.
+
+This package is built against **Alpine.js v3** (pinned to `3.15.12`).
 
 ### From a CDN
 
 ```swift
 var head: some HTML {
     meta(.charset(.utf8))
-    script(.src("https://cdn.jsdelivr.net/npm/[email protected]/dist/cdn.min.js"), .defer) {}
+    script(.src("https://cdn.jsdelivr.net/npm/alpinejs@3.15.12/dist/cdn.min.js"), .defer) {}
 }
 ```
 

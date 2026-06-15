@@ -56,6 +56,7 @@ All 17 core AlpineJS directives are implemented under `HTMLAttribute.x`:
 
 - `elementary` ≥ 0.6.0
 - No other external dependencies
+- Built against **Alpine.js v3.15.12** (consumers must include the Alpine.js runtime in their page)
 
 ## Commit Guidelines
 
