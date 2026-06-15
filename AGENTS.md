@@ -36,8 +36,15 @@ The core target follows a two-file pattern:
 ```
 Sources/ElementaryAlpine/
 ├── HTMLAttribute+Alpine.swift   # Attribute factory functions (e.g., `.x.data("...")`)
-└── HTMLAttributeValue+Alpine.swift  # Value types (e.g., `OnModifier`, `BindClass`)
+└── HTMLAttributeValue+Alpine.swift  # Value types (e.g., `OnModifier`, `ModelModifier`)
 ```
+
+All 17 core AlpineJS directives are implemented under `HTMLAttribute.x`:
+- `x-data`, `x-init`, `x-show`, `x-bind`/`x-bind:class`/`x-bind:style`
+- `x-on` with modifiers (base, keyboard, mouse, advanced)
+- `x-text`, `x-html`, `x-model` with modifiers, `x-modelable`
+- `x-for`, `x-transition` (all phases), `x-effect`, `x-ignore`, `x-ref`, `x-cloak`
+- `x-teleport`, `x-if`, `x-id`
 
 ## Testing
 
@@ -55,6 +62,8 @@ Sources/ElementaryAlpine/
 - Prefix types: `feat:`, `fix:`, `chore:`, `test:`, `docs:`, `refactor:`
 - Include target scope in parens: `feat(core):`
 - Release tags: `chore: tag vX.Y.ZZZ`
+- **Never push without explicit user confirmation** — commits stay local until the user authorizes a push
+- The build agent prepares changes, shows the diff, and waits for user confirmation before each commit
 
 ## CI/CD
 
