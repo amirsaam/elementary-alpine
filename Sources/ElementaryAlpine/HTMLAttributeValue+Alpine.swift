@@ -43,15 +43,13 @@ public extension HTMLAttributeValue.Alpine {
         }
     }
 
-    struct ModelModifier: RawRepresentable {
-        public var rawValue: String
-
-        public init(rawValue: String) {
-            self.rawValue = rawValue
-        }
+    struct ModelModifier {
+        var property: String
+        var modifiers: String
 
         public init(property: String) {
-            rawValue = property
+            self.property = property
+            self.modifiers = ""
         }
     }
 }
@@ -202,11 +200,13 @@ public extension HTMLAttributeValue.Alpine.ModelModifier {
     }
 
     internal consuming func appending(modifier: String, value: String? = nil) -> Self {
-        rawValue += "."
-        rawValue += modifier
+        if !modifiers.isEmpty {
+            modifiers += "."
+        }
+        modifiers += modifier
         if let value {
-            rawValue += "."
-            rawValue += value
+            modifiers += "."
+            modifiers += value
         }
         return self
     }

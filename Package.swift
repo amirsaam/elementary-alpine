@@ -27,6 +27,22 @@ let package = Package(
                 .product(name: "Elementary", package: "elementary")
             ],
             swiftSettings: featureFlags
-        )
+        ),
+        .testTarget(
+            name: "ElementaryAlpineTests",
+            dependencies: [
+                .target(name: "ElementaryAlpine"),
+                .target(name: "TestUtilities"),
+            ],
+            swiftSettings: featureFlags
+        ),
+        .target(
+            name: "TestUtilities",
+            dependencies: [
+                .product(name: "Elementary", package: "elementary")
+            ],
+            path: "Tests/TestUtilities",
+            swiftSettings: featureFlags
+        ),
     ]
 )
