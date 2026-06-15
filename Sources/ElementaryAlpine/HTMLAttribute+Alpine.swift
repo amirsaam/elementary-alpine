@@ -42,4 +42,16 @@ extension HTMLAttribute.x {
     public static func on(_ event: String, _ value: String) -> HTMLAttribute {
         .init(name: "x-on:\(event)", value: value)
     }
+
+    public static func text(_ value: String) -> HTMLAttribute {
+        .init(name: "x-text", value: value)
+    }
+
+    public static func html(_ value: String) -> HTMLAttribute {
+        .init(name: "x-html", value: value)
+    }
+
+    public static func model(_ value: String) -> HTMLAttribute {
+        .init(name: "x-model", value: value)
+    }
 }
