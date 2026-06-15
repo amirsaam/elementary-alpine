@@ -15,8 +15,7 @@ let package = Package(
         .watchOS(.v10),
     ],
     products: [
-        .library(name: "ElementaryAlpine", targets: ["ElementaryAlpine"]),
-        .library(name: "ElementaryAlpineGlobals", targets: ["ElementaryAlpineGlobals"]),
+        .library(name: "ElementaryAlpine", targets: ["ElementaryAlpine"])
     ],
     dependencies: [
         .package(url: "https://github.com/elementary-swift/elementary.git", from: "0.6.0")
@@ -29,25 +28,10 @@ let package = Package(
             ],
             swiftSettings: featureFlags
         ),
-        .target(
-            name: "ElementaryAlpineGlobals",
-            dependencies: [
-                .product(name: "Elementary", package: "elementary")
-            ],
-            swiftSettings: featureFlags
-        ),
         .testTarget(
             name: "ElementaryAlpineTests",
             dependencies: [
                 .target(name: "ElementaryAlpine"),
-                .target(name: "TestUtilities"),
-            ],
-            swiftSettings: featureFlags
-        ),
-        .testTarget(
-            name: "ElementaryAlpineGlobalsTests",
-            dependencies: [
-                .target(name: "ElementaryAlpineGlobals"),
                 .target(name: "TestUtilities"),
             ],
             swiftSettings: featureFlags
