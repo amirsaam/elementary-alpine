@@ -98,4 +98,20 @@ extension HTMLAttribute.x {
     public static var transitionOpacity: HTMLAttribute {
         .init(name: "x-transition.opacity", value: nil)
     }
+
+    public static func effect(_ value: String) -> HTMLAttribute {
+        .init(name: "x-effect", value: value)
+    }
+
+    public static var ignore: HTMLAttribute {
+        .init(name: "x-ignore", value: nil)
+    }
+
+    public static func ref(_ value: String) -> HTMLAttribute {
+        .init(name: "x-ref", value: value)
+    }
+
+    public static var cloak: HTMLAttribute {
+        .init(name: "x-cloak", value: nil)
+    }
 }
