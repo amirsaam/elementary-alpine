@@ -29,7 +29,7 @@ final class ElementaryAlpineMorphBetweenTests: XCTestCase {
                 startMarker: "<!--start-->",
                 endMarker: "<!--end-->",
                 event: "click",
-                options: { .updating("console.log(el)") }
+                options: { .updating { "console.log(el)" } }
             ) {
                 li { "new" }
             }
@@ -59,7 +59,7 @@ final class ElementaryAlpineMorphBetweenTests: XCTestCase {
                 startMarker: "<!--start-->",
                 endMarker: "<!--end-->",
                 event: "click",
-                options: { .key("(el) => el.id") }
+                options: { .key { "(el) => el.id" } }
             ) {
                 li { "new" }
             }
@@ -75,13 +75,13 @@ final class ElementaryAlpineMorphBetweenTests: XCTestCase {
                 endMarker: "<!--end-->",
                 event: "click",
                 options: {
-                    .updating("console.log('u')")
-                        .updated("console.log('d')")
-                        .removing("console.log('r')")
-                        .removed("console.log('rm')")
-                        .adding("console.log('a')")
-                        .added("console.log('ad')")
-                        .key("(el) => el.id")
+                    .updating { "console.log('u')" }
+                        .updated { "console.log('d')" }
+                        .removing { "console.log('r')" }
+                        .removed { "console.log('rm')" }
+                        .adding { "console.log('a')" }
+                        .added { "console.log('ad')" }
+                        .key { "(el) => el.id" }
                         .lookahead()
                 }
             ) {
@@ -189,7 +189,7 @@ final class ElementaryAlpineMorphBetweenTests: XCTestCase {
             setupMorphBetween(
                 startMarker: "<!--start-->",
                 endMarker: "<!--end-->",
-                options: { .added("console.log('added')") }
+                options: { .added { "console.log('added')" } }
             ) {
                 li { "new" }
             }

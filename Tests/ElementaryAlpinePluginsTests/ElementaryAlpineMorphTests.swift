@@ -31,7 +31,7 @@ final class ElementaryAlpineMorphTests: XCTestCase {
                 trigger: "#btn",
                 target: "#target",
                 event: "click",
-                options: { .updating("console.log(el)") }
+                options: { .updating { "console.log(el)" } }
             ) {
                 div { "new" }
             }
@@ -68,7 +68,7 @@ final class ElementaryAlpineMorphTests: XCTestCase {
                 trigger: "#btn",
                 target: "#list",
                 event: "click",
-                options: { .key("(el) => el.id") }
+                options: { .key { "(el) => el.id" } }
             ) {
                 ul { li { "a" } }
             }
@@ -83,13 +83,13 @@ final class ElementaryAlpineMorphTests: XCTestCase {
                 target: "#target",
                 event: "click",
                 options: {
-                    .updating("console.log('u')")
-                        .updated("console.log('d')")
-                        .removing("console.log('r')")
-                        .removed("console.log('rm')")
-                        .adding("console.log('a')")
-                        .added("console.log('ad')")
-                        .key("(el) => el.id")
+                    .updating { "console.log('u')" }
+                        .updated { "console.log('d')" }
+                        .removing { "console.log('r')" }
+                        .removed { "console.log('rm')" }
+                        .adding { "console.log('a')" }
+                        .added { "console.log('ad')" }
+                        .key { "(el) => el.id" }
                         .lookahead()
                 }
             ) {
@@ -120,7 +120,7 @@ final class ElementaryAlpineMorphTests: XCTestCase {
                 trigger: "#btn",
                 target: "#target",
                 event: "click",
-                options: { .updating(body) }
+                options: { .updating { body } }
             ) {
                 div { "new" }
             }
@@ -259,7 +259,7 @@ final class ElementaryAlpineMorphTests: XCTestCase {
                 trigger: "#btn",
                 target: "#target",
                 event: "click",
-                options: { .added("console.log('added')") }
+                options: { .added { "console.log('added')" } }
             ) {
                 div { "new" }
             }
@@ -320,7 +320,7 @@ final class ElementaryAlpineMorphTests: XCTestCase {
         let html = renderToString {
             setupMorph(
                 target: "#target",
-                options: { .added("console.log('added')") }
+                options: { .added { "console.log('added')" } }
             ) {
                 div { "new" }
             }
