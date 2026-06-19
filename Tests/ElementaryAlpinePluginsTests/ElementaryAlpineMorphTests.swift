@@ -107,19 +107,20 @@ final class ElementaryAlpineMorphTests: XCTestCase {
     }
 
     func testChildrenOnlyAndSkipInHook() {
+        let body = """
+            if (el.dataset.frozen) {
+                childrenOnly()
+            }
+            if (el.dataset.skip) {
+                skip()
+            }
+            """
         let html = renderToString {
             setupMorph(
                 trigger: "#btn",
                 target: "#target",
                 event: "click",
-                options: { .updating("""
-                    if (el.dataset.frozen) {
-                        childrenOnly()
-                    }
-                    if (el.dataset.skip) {
-                        skip()
-                    }
-                    """) }
+                options: { .updating(body) }
             ) {
                 div { "new" }
             }
@@ -324,7 +325,11 @@ final class ElementaryAlpineMorphTests: XCTestCase {
                 div { "new" }
             }
         }
-        XCTAssertTrue(html.contains("Alpine.morph(document.querySelector('#target'), `<div>new</div>`, { added(el) { console.log('added') } })"))
+        XCTAssertTrue(
+            html.contains(
+                "Alpine.morph(document.querySelector('#target'), `<div>new</div>`, { added(el) { console.log('added') } })"
+            )
+        )
         XCTAssertFalse(html.contains("addEventListener"))
     }
 

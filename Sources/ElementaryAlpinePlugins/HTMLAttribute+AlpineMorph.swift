@@ -8,7 +8,7 @@ import Foundation
 /// that fires when the trigger element receives the given event. When `trigger`
 /// is empty, the script emits the imperative `Alpine.morph(...)` call directly,
 /// which runs once on page load.
-fileprivate func generateMorphScript(
+private func generateMorphScript(
     target: String,
     trigger: String = "",
     event: String = "",
@@ -17,11 +17,13 @@ fileprivate func generateMorphScript(
     @HTMLBuilder returning: () -> some HTML
 ) -> some HTML {
     let rawHtml: String = returning().render()
-    let escaped: String = rawHtml
+    let escaped =
+        rawHtml
         .replacingOccurrences(of: "\\", with: "\\\\")
         .replacingOccurrences(of: "`", with: "\\`")
         .replacingOccurrences(of: "${", with: "\\${")
         .replacingOccurrences(of: "</script>", with: "<\\/script>")
+
     let optionsJS = options().toJS()
     let optionsPart: String = optionsJS.isEmpty ? "" : ", \(optionsJS)"
     let command = jsCommand()
