@@ -6,6 +6,90 @@
 import Elementary
 import ElementaryAlpine
 
+struct CounterPage: HTMLDocument {
+    var head: some HTML {
+        meta(.charset(.utf8))
+        title("Counter")
+        setupAlpine()
+    }
+    var body: some HTML {
+        main(.class("container")) {
+            div(.x.data("{ count: 0 }"), .class("counter")) {
+                button(.x.on("click", "count--")) { "−" }
+                span(.x.text("count")) { "0" }
+                button(.x.on("click", "count++")) { "+" }
+                button(.x.on("click", "count = 0"), .x.show("count > 0")) { "Reset" }
+            }
+        }
+    }
+}
+```
+
+**Generated HTML:**
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Counter</title>
+    <script
+      src="https://cdn.jsdelivr.net/npm/alpinejs@3.15.12/dist/cdn.min.js"
+      defer
+    ></script>
+  </head>
+  <body>
+    <main class="container">
+      <div x-data="{ count: 0 }" class="counter">
+        <button x-on:click="count--">−</button>
+        <span x-text="count">0</span>
+        <button x-on:click="count++">+</button>
+        <button x-on:click="count = 0" x-show="count > 0">Reset</button>
+      </div>
+    </main>
+  </body>
+</html>
+```
+
+## Use it
+
+Add `ElementaryAlpine` to your `Package.swift` dependencies:
+
+```swift
+// swift-tools-version: 6.0
+import PackageDescription
+
+let package = Package(
+    name: "MyApp",
+    dependencies: [
+        .package(url: "https://github.com/elementary-swift/elementary-alpine", from: "0.3.0"),
+    ],
+    targets: [
+        .target(
+            name: "App",
+            dependencies: [
+                .product(name: "ElementaryAlpine", package: "elementary-alpine"),
+            ]
+        ),
+    ]
+)
+```
+
+To use [Alpine.js plugins](https://alpinejs.dev/plugins), add the `ElementaryAlpinePlugins` product:
+
+```swift
+.product(name: "ElementaryAlpinePlugins", package: "elementary-alpine"),
+```
+
+This package is built against **Alpine.js v3** (pinned to `3.15.12`).
+
+## Play with it
+
+Example apps will be added in a future.
+
+## Quick tour
+
+```swift
 // first-class support for all AlpineJS directives
 div(.x.data("{ count: 0 }"), .class("counter")) {
     button(.x.on("click", "count++")) { "Increment" }
@@ -62,129 +146,23 @@ div(.x.show("open"), .x.transition(modifiers: [.scale(80), .origin(.top)])) {
 }
 ```
 
-## Including Alpine.js
-
-This package generates AlpineJS HTML attributes — it does not bundle the Alpine.js runtime. You must include it yourself in your page `<head>`.
-
-This package is built against **Alpine.js v3** (pinned to `3.15.12`).
-
-### From a CDN
-
-```swift
-var head: some HTML {
-    meta(.charset(.utf8))
-    script(.src("https://cdn.jsdelivr.net/npm/alpinejs@3.15.12/dist/cdn.min.js"), .defer) {}
-}
-```
-
-### From a local file
-
-Download `alpine.min.js` from the [Alpine.js releases](https://github.com/alpinejs/alpine/releases) and place it in your project's `Public/` folder, then reference it:
-
-```swift
-var head: some HTML {
-    meta(.charset(.utf8))
-    script(.src("/alpine.min.js"), .defer) {}
-}
-```
-
-For Hummingbird/Vapor examples, add the file as a resource in your `Package.swift`:
-
-```swift
-.executableTarget(
-    name: "App",
-    // ...
-    resources: [
-        .copy("Public")
-    ]
-)
-```
-
-## Setup
-
-The `setupAlpine(version:plugins:)` helper generates the `<script>` tags needed to install Alpine.js and any plugins from a CDN. Plugin scripts are emitted first (per Alpine.js requirements), followed by Alpine core. This replaces the manual `script { ... }` chain in the `## Plugins` section below.
-
-**Without plugins:**
-
-```swift
-var head: some HTML {
-    meta(.charset(.utf8))
-    setupAlpine()
-}
-```
-
-**With plugins:**
-
-```swift
-var head: some HTML {
-    meta(.charset(.utf8))
-    setupAlpine(plugins: [.mask, .focus, .morph])
-}
-```
-
-**Generated HTML:**
-
-```html
-<script src="https://cdn.jsdelivr.net/npm/@alpinejs/mask@3.15.12/dist/cdn.min.js" defer></script>
-<script src="https://cdn.jsdelivr.net/npm/@alpinejs/focus@3.15.12/dist/cdn.min.js" defer></script>
-<script src="https://cdn.jsdelivr.net/npm/@alpinejs/morph@3.15.12/dist/cdn.min.js" defer></script>
-<script src="https://cdn.jsdelivr.net/npm/alpinejs@3.15.12/dist/cdn.min.js" defer></script>
-```
-
-**Available plugins** (use the `AlpinePlugin` enum cases):
-
-| Plugin | Enum case | Source |
-|--------|-----------|--------|
-| Mask | `.mask` | `@alpinejs/mask` |
-| Intersect | `.intersect` | `@alpinejs/intersect` |
-| Resize | `.resize` | `@alpinejs/resize` |
-| Persist | `.persist` | `@alpinejs/persist` |
-| Focus | `.focus` | `@alpinejs/focus` |
-| Collapse | `.collapse` | `@alpinejs/collapse` |
-| Anchor | `.anchor` | `@alpinejs/anchor` |
-| Sort | `.sort` | `@alpinejs/sort` |
-| Morph | `.morph` | `@alpinejs/morph` |
-
-**Custom version:**
-
-```swift
-setupAlpine(version: "3.14.0", plugins: [.focus])
-```
-
-## Modifiers
-
-Directives that support modifiers take a `modifiers:` array parameter with a typed enum value:
-
-```swift
-// x-show
-.x.show("open", modifiers: [.important])              // → x-show.important="open"
-
-// x-on
-.x.on("click", "...", modifiers: [.prevent, .stop])  // → x-on:click.prevent.stop="..."
-.x.on("keyup", "...", modifiers: [.enter])            // → x-on:keyup.enter="..."
-.x.on("input", "...", modifiers: [.debounce(500)])    // → x-on:input.debounce.500ms="..."
-.x.on("click", "...", modifiers: [.selfTarget])       // → x-on:click.self="..."
-
-// x-model
-.x.model("search", modifiers: [.number, .change, .blur, .enter])
-
-// x-transition
-.x.transition(modifiers: [.opacity])
-.x.transition(modifiers: [.scale(80), .origin(.topRight)])
-.x.transition(modifiers: [.duration(500), .delay(50)])
-```
-
 ## Globals
 
-Alpine.js global APIs (`Alpine.data`, `Alpine.store`, `Alpine.bind`) are available as `registerGlobal` for registering reusable components, stores, and bound directives:
+Alpine.js global APIs (`Alpine.data`, `Alpine.store`, `Alpine.bind`) are available as `registerGlobal` for registering reusable components, stores, and bound directives. The action body is a trailing closure returning a JavaScript expression:
 
 ```swift
 import ElementaryAlpine
 
 // In your head:
-registerGlobal(.data, on: "dropdown", action: "() => ({ open: false, toggle() { this.open = !this.open } })")
-registerGlobal(.store, on: "notifications", action: "{ items: [] }")
-registerGlobal(.bind, on: "myButton", action: "() => ({ type: 'button' })")
+registerGlobal(.data, on: "dropdown") {
+    "() => ({ open: false, toggle() { this.open = !this.open } })"
+}
+registerGlobal(.store, on: "notifications") {
+    "{ items: [] }"
+}
+registerGlobal(.bind, on: "myButton") {
+    "() => ({ type: 'button' })"
+}
 ```
 
 **Generated HTML:**
@@ -214,11 +192,135 @@ registerGlobal(.bind, on: "myButton", action: "() => ({ type: 'button' })")
 
 **API:**
 
-| Function                               | Alpine.js call               | Use case                                   |
-| -------------------------------------- | ---------------------------- | ------------------------------------------ |
-| `registerGlobal(.data, on:, action:)`  | `Alpine.data(name, factory)` | Reusable component data (factory function) |
-| `registerGlobal(.store, on:, action:)` | `Alpine.store(name, value)`  | Global reactive store (direct object)      |
-| `registerGlobal(.bind, on:, action:)`  | `Alpine.bind(name, factory)` | Reusable x-bind object (factory function)  |
+| Function                              | Alpine.js call               | Use case                                   |
+| ------------------------------------- | ---------------------------- | ------------------------------------------ |
+| `registerGlobal(.data, on:) { ... }`  | `Alpine.data(name, factory)` | Reusable component data (factory function) |
+| `registerGlobal(.store, on:) { ... }` | `Alpine.store(name, value)`  | Global reactive store (direct object)      |
+| `registerGlobal(.bind, on:) { ... }`  | `Alpine.bind(name, factory)` | Reusable x-bind object (factory function)  |
+
+## Setup
+
+The `setupAlpine(version:plugins:)` helper generates the `<script>` tags needed to install Alpine.js and any plugins from a CDN. Plugin scripts are emitted first (per Alpine.js requirements), followed by Alpine core.
+
+**Without plugins:**
+
+```swift
+var head: some HTML {
+    meta(.charset(.utf8))
+    setupAlpine()
+}
+```
+
+**With plugins:**
+
+```swift
+var head: some HTML {
+    meta(.charset(.utf8))
+    setupAlpine(plugins: [.mask, .focus, .morph])
+}
+```
+
+**Generated HTML:**
+
+```html
+<script
+  src="https://cdn.jsdelivr.net/npm/@alpinejs/mask@3.15.12/dist/cdn.min.js"
+  defer
+></script>
+<script
+  src="https://cdn.jsdelivr.net/npm/@alpinejs/focus@3.15.12/dist/cdn.min.js"
+  defer
+></script>
+<script
+  src="https://cdn.jsdelivr.net/npm/@alpinejs/morph@3.15.12/dist/cdn.min.js"
+  defer
+></script>
+<script
+  src="https://cdn.jsdelivr.net/npm/alpinejs@3.15.12/dist/cdn.min.js"
+  defer
+></script>
+```
+
+**Available plugins** (use the `AlpinePlugin` enum cases):
+
+| Plugin    | Enum case    | Source                |
+| --------- | ------------ | --------------------- |
+| Mask      | `.mask`      | `@alpinejs/mask`      |
+| Intersect | `.intersect` | `@alpinejs/intersect` |
+| Resize    | `.resize`    | `@alpinejs/resize`    |
+| Persist   | `.persist`   | `@alpinejs/persist`   |
+| Focus     | `.focus`     | `@alpinejs/focus`     |
+| Collapse  | `.collapse`  | `@alpinejs/collapse`  |
+| Anchor    | `.anchor`    | `@alpinejs/anchor`    |
+| Sort      | `.sort`      | `@alpinejs/sort`      |
+| Morph     | `.morph`     | `@alpinejs/morph`     |
+
+**Custom version:**
+
+```swift
+setupAlpine(version: "3.14.0", plugins: [.focus])
+```
+
+### Including Alpine.js manually
+
+`setupAlpine` always emits jsDelivr CDN URLs. If you need to host Alpine.js yourself, use a different CDN, or self-host your plugin scripts, write the `<script>` tags directly. **Plugin scripts must be loaded before Alpine core** — per the Alpine.js docs, the core script hooks into the plugin instances at startup.
+
+**From a CDN:**
+
+```swift
+var head: some HTML {
+    meta(.charset(.utf8))
+    script(.src("https://cdn.jsdelivr.net/npm/alpinejs@3.15.12/dist/cdn.min.js"), .defer) {}
+}
+```
+
+**From a local file:**
+
+Download `alpine.min.js` from the [Alpine.js releases](https://github.com/alpinejs/alpine/releases) and place it in your project's `Public/` (or equivalent served directory). For Hummingbird/Vapor, declare the resource in `Package.swift`:
+
+```swift
+.executableTarget(
+    name: "App",
+    // ...
+    resources: [
+        .copy("Public")
+    ]
+)
+```
+
+Then reference it by URL path:
+
+```swift
+var head: some HTML {
+    meta(.charset(.utf8))
+    script(.src("/alpine.min.js"), .defer) {}
+}
+```
+
+> The same pattern applies to plugin scripts — download each `@alpinejs/<plugin>@3.15.12` release, place the `cdn.min.js` in `Public/`, and load them in plugin-first order.
+
+## Modifiers
+
+Directives that support modifiers take a `modifiers:` array parameter with a typed enum value:
+
+```swift
+// x-show
+.x.show("open", modifiers: [.important])              // → x-show.important="open"
+
+// x-on
+.x.on("click", "...", modifiers: [.prevent, .stop])  // → x-on:click.prevent.stop="..."
+.x.on("keyup", "...", modifiers: [.enter])            // → x-on:keyup.enter="..."
+.x.on("input", "...", modifiers: [.debounce(500)])    // → x-on:input.debounce.500ms="..."
+.x.on("click", "...", modifiers: [.selfTarget])       // → x-on:click.self="..."
+
+// x-model
+.x.model("search", modifiers: [.number, .change, .blur, .enter])
+
+// x-transition
+.x.transition(modifiers: [.opacity])
+.x.transition(modifiers: [.scale(80), .origin(.topRight)])
+.x.transition(modifiers: [.duration(500), .delay(50)])
+```
 
 ## Magics
 
@@ -255,33 +357,16 @@ div(.x.data("{ open: false }"), .x.text("$el.tagName"))
 
 > **Alpine.js plugin scripts depend on Alpine.js core.** At the Swift level, `ElementaryAlpinePlugins` has no compile-time dependency on `ElementaryAlpine` — both libraries only depend on `Elementary`. The dependency exists at the **JavaScript runtime** level: plugin CDN scripts hook into the core Alpine instance, so the plugin script tag must be present in your page (and load before Alpine core, per the Alpine.js docs).
 
-**Install plugin scripts** in your `<head>` (BEFORE Alpine core, per Alpine.js docs). Add only the scripts for the plugins you use:
+Use [`setupAlpine(plugins:)`](#setup) to install the script tags for the plugins you use — plugin scripts are emitted before Alpine core, in the correct order:
 
 ```swift
 var head: some HTML {
     meta(.charset(.utf8))
-    // Mask
-    script(.src("https://cdn.jsdelivr.net/npm/@alpinejs/mask@3.15.12/dist/cdn.min.js"), .defer) {}
-    // Intersect
-    script(.src("https://cdn.jsdelivr.net/npm/@alpinejs/intersect@3.15.12/dist/cdn.min.js"), .defer) {}
-    // Resize
-    script(.src("https://cdn.jsdelivr.net/npm/@alpinejs/resize@3.15.12/dist/cdn.min.js"), .defer) {}
-    // Persist
-    script(.src("https://cdn.jsdelivr.net/npm/@alpinejs/persist@3.15.12/dist/cdn.min.js"), .defer) {}
-    // Focus
-    script(.src("https://cdn.jsdelivr.net/npm/@alpinejs/focus@3.15.12/dist/cdn.min.js"), .defer) {}
-    // Collapse
-    script(.src("https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.15.12/dist/cdn.min.js"), .defer) {}
-    // Anchor
-    script(.src("https://cdn.jsdelivr.net/npm/@alpinejs/anchor@3.15.12/dist/cdn.min.js"), .defer) {}
-    // Sort
-    script(.src("https://cdn.jsdelivr.net/npm/@alpinejs/sort@3.15.12/dist/cdn.min.js"), .defer) {}
-    // Morph
-    script(.src("https://cdn.jsdelivr.net/npm/@alpinejs/morph@3.15.12/dist/cdn.min.js"), .defer) {}
-    // Alpine core (must come after all plugin scripts)
-    script(.src("https://cdn.jsdelivr.net/npm/alpinejs@3.15.12/dist/cdn.min.js"), .defer) {}
+    setupAlpine(plugins: [.mask, .focus, .morph])
 }
 ```
+
+If you need to host plugin scripts yourself or use a non-jsDelivr CDN, see [Including Alpine.js manually](#including-alpinejs-manually) above.
 
 ### Mask
 
@@ -920,16 +1005,16 @@ The generated JS includes a `findMorphMarker` helper that handles both CSS selec
 
 **Options (lifecycle hooks + key + lookahead):**
 
-Both functions accept a `MorphOptions` builder for configuring the morph:
+Both functions accept an `options:` builder for configuring the morph. The builder closure returns a `MorphOptions` value, built by chaining lifecycle methods. Each method takes a trailing closure returning a JavaScript expression:
 
 ```swift
 setupMorph(
-    trigger: "#btn",
+    trigger: "#list-refresh",
     target: "#list",
     event: "click"
 ) {
-    .updating("console.log('updating', el)")
-    .key("(el) => el.id")
+    .updating { "console.log('updating', el)" }
+    .key { "(el) => el.id" }
     .lookahead()
 } returning: {
     ul { li { "item" } }
@@ -938,24 +1023,24 @@ setupMorph(
 
 **Available options** (same for both `setupMorph` and `setupMorphBetween`):
 
-| Method            | Alpine.js option                         | Description                          |
-| ----------------- | ---------------------------------------- | ------------------------------------ |
-| `.updating("js")` | `updating(el, toEl, childrenOnly, skip)` | Called before patching               |
-| `.updated("js")`  | `updated(el, toEl)`                      | Called after patching                |
-| `.removing("js")` | `removing(el, skip)`                     | Called before removing               |
-| `.removed("js")`  | `removed(el)`                            | Called after removing                |
-| `.adding("js")`   | `adding(el, skip)`                       | Called before adding                 |
-| `.added("js")`    | `added(el)`                              | Called after adding                  |
-| `.key("js")`      | `key(el)`                                | Function returning the element's key |
-| `.lookahead()`    | `lookahead: true`                        | Enable lookahead algorithm           |
+| Method          | Alpine.js option                         | Description                          |
+| --------------- | ---------------------------------------- | ------------------------------------ |
+| `.updating { }` | `updating(el, toEl, childrenOnly, skip)` | Called before patching               |
+| `.updated { }`  | `updated(el, toEl)`                      | Called after patching                |
+| `.removing { }` | `removing(el, skip)`                     | Called before removing               |
+| `.removed { }`  | `removed(el)`                            | Called after removing                |
+| `.adding { }`   | `adding(el, skip)`                       | Called before adding                 |
+| `.added { }`    | `added(el)`                              | Called after adding                  |
+| `.key { }`      | `key(el)`                                | Function returning the element's key |
+| `.lookahead()`  | `lookahead: true`                        | Enable lookahead algorithm           |
 
 **Dynamic HTML (fetch):**
 
-Use the `jsCommand` parameter to dynamically compute the HTML (e.g., from a fetch). The closure must assign the HTML string to a variable named `html`:
+Use the `jsCommand:` parameter to dynamically compute the HTML (e.g., from a fetch). The closure must assign the HTML string to a variable named `html`:
 
 ```swift
 setupMorph(
-    trigger: "#btn",
+    trigger: "#refresh-btn",
     target: "#list",
     event: "click"
 ) {
@@ -965,16 +1050,18 @@ setupMorph(
 }
 ```
 
-**All three trailing closures (options + jsCommand + returning):**
+**All three parameters (options + jsCommand + returning):**
+
+Combine all three when you need lifecycle hooks, dynamic HTML, and a fallback template:
 
 ```swift
 setupMorph(
-    trigger: "#btn",
+    trigger: "#refresh-btn",
     target: "#list",
     event: "click"
 ) {
-    .updating("console.log('updating', el)")
-    .key("(el) => el.id")
+    .updating { "console.log('updating', el)" }
+    .key { "(el) => el.id" }
     .lookahead()
 } jsCommand: {
     "const html = await fetch('/api/list').then(r => r.text())"
@@ -1004,16 +1091,12 @@ setupMorphBetween(
 
 - For more complex morph scenarios (e.g., custom element resolution, exotic comment markers), use a raw `<script>` block instead.
 
-## Play with it
-
-Example apps will be added in a future release.
-
 ## Documentation
 
 The package ships two libraries:
 
 - **`ElementaryAlpine`** — core:
-  - **Attribute helpers** via the `.x` syntax on all `HTMLElements` for all 17 core [AlpineJS directives](https://alpinejs.dev/directives):
+  - **Attribute helpers** via the `.x` syntax on all `HTMLElements` for all 18 core [AlpineJS directives](https://alpinejs.dev/directives):
     - `x-data`, `x-init` (`.setup`), `x-show`
     - `x-bind` / `x-bind:class` / `x-bind:style`
     - `x-on` with modifiers (base, keyboard, mouse, advanced)
@@ -1021,7 +1104,10 @@ The package ships two libraries:
     - `x-for` (`.loop`), `x-transition` (all phases), `x-effect`, `x-ignore`, `x-ref`, `x-cloak`
     - `x-teleport`, `x-if` (`.when`), `x-id`
   - **Global helpers** — `registerGlobal(_:on:action:)` for `Alpine.data()`, `Alpine.store()`, `Alpine.bind()` (see [Globals](#globals))
+  - **CDN helper** — `setupAlpine(version:plugins:)` emits the `<script>` tags for Alpine.js + plugins (see [Setup](#setup))
 - **`ElementaryAlpinePlugins`** — Alpine.js plugin wrappers (see [Plugins](#plugins)). Currently ships **Mask** (`.xMask.pattern` / `.xMask.dynamic`), **Intersect** (`.xIntersect.intersect` / `.enter` / `.leave`), **Resize** (`.xResize.resize`), **Persist** (the `$persist` magic — no directive surface), **Focus** (`.xFocus.trap`), **Collapse** (`.xCollapse.collapse`), **Anchor** (`.xAnchor.anchor`), **Sort** (`.xSort.sort` / `.item` / `.group` / `.handle` / `.ignore` / `.config`), and **Morph** (`setupMorph` + `setupMorphBetween`).
+
+For contribution guidelines and architecture details, see [`AGENTS.md`](./AGENTS.md).
 
 ## Future directions
 
