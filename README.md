@@ -139,18 +139,35 @@ registerGlobal(.bind, on: "myButton", action: "() => ({ type: 'button' })")
 **Generated HTML:**
 
 ```html
-<script>document.addEventListener('alpine:init', () => { Alpine.data('dropdown', () => ({ open: false, toggle() { this.open = !this.open } })) })</script>
-<script>document.addEventListener('alpine:init', () => { Alpine.store('notifications', { items: [] }) })</script>
-<script>document.addEventListener('alpine:init', () => { Alpine.bind('myButton', () => ({ type: 'button' })) })</script>
+<script>
+  document.addEventListener('alpine:init', () => {
+    Alpine.data('dropdown', () => ({
+      open: false,
+      toggle() {
+        this.open = !this.open
+      },
+    }))
+  })
+</script>
+<script>
+  document.addEventListener('alpine:init', () => {
+    Alpine.store('notifications', { items: [] })
+  })
+</script>
+<script>
+  document.addEventListener('alpine:init', () => {
+    Alpine.bind('myButton', () => ({ type: 'button' }))
+  })
+</script>
 ```
 
 **API:**
 
-| Function | Alpine.js call | Use case |
-|----------|---------------|----------|
-| `registerGlobal(.data, on:, action:)` | `Alpine.data(name, factory)` | Reusable component data (factory function) |
-| `registerGlobal(.store, on:, action:)` | `Alpine.store(name, value)` | Global reactive store (direct object) |
-| `registerGlobal(.bind, on:, action:)` | `Alpine.bind(name, factory)` | Reusable x-bind object (factory function) |
+| Function                               | Alpine.js call               | Use case                                   |
+| -------------------------------------- | ---------------------------- | ------------------------------------------ |
+| `registerGlobal(.data, on:, action:)`  | `Alpine.data(name, factory)` | Reusable component data (factory function) |
+| `registerGlobal(.store, on:, action:)` | `Alpine.store(name, value)`  | Global reactive store (direct object)      |
+| `registerGlobal(.bind, on:, action:)`  | `Alpine.bind(name, factory)` | Reusable x-bind object (factory function)  |
 
 ## Magics
 
@@ -208,6 +225,8 @@ var head: some HTML {
     script(.src("https://cdn.jsdelivr.net/npm/@alpinejs/anchor@3.15.12/dist/cdn.min.js"), .defer) {}
     // Sort
     script(.src("https://cdn.jsdelivr.net/npm/@alpinejs/sort@3.15.12/dist/cdn.min.js"), .defer) {}
+    // Morph
+    script(.src("https://cdn.jsdelivr.net/npm/@alpinejs/morph@3.15.12/dist/cdn.min.js"), .defer) {}
     // Alpine core (must come after all plugin scripts)
     script(.src("https://cdn.jsdelivr.net/npm/alpinejs@3.15.12/dist/cdn.min.js"), .defer) {}
 }
@@ -238,13 +257,14 @@ input(.xMask.dynamic("creditCardMask"), .x.model("card"))
 **Generated HTML:**
 
 ```html
-<input x-mask="99/99/9999" x-model="date">
-<input x-mask="(999) 999-9999" x-model="phone">
-<input x-mask:dynamic="$money($input)" x-model="amount">
-<input x-mask:dynamic="creditCardMask" x-model="card">
+<input x-mask="99/99/9999" x-model="date" />
+<input x-mask="(999) 999-9999" x-model="phone" />
+<input x-mask:dynamic="$money($input)" x-model="amount" />
+<input x-mask:dynamic="creditCardMask" x-model="card" />
 ```
 
 **Notes:**
+
 - `x-mask:dynamic` accepts a JavaScript expression or a function name. The expression receives `$input` (the current input value) as a magic.
 - The built-in `$money($input, '.', ',', 4)` helper handles currency formatting with optional custom decimal/thousands separators and precision. Pass it as the directive value — no Swift modifier is needed.
 - The Mask plugin has **no HTML modifiers** in Alpine.js, so `MaskDynamicModifier` does not exist. All configuration happens in the value string.
@@ -318,12 +338,12 @@ div(.xIntersect.intersect("loaded = true", modifiers: [.threshold(50), .full])) 
 
 **Modifier reference:**
 
-| Modifier | Raw value | Notes |
-|----------|-----------|-------|
-| `.once` | `once` | Fire only the first time |
-| `.half` | `half` | Fire at 50% visibility |
-| `.full` | `full` | Fire at 99% visibility |
-| `.threshold(Int)` | `threshold.N` | Custom percentage (0–100) |
+| Modifier          | Raw value             | Notes                                                 |
+| ----------------- | --------------------- | ----------------------------------------------------- |
+| `.once`           | `once`                | Fire only the first time                              |
+| `.half`           | `half`                | Fire at 50% visibility                                |
+| `.full`           | `full`                | Fire at 99% visibility                                |
+| `.threshold(Int)` | `threshold.N`         | Custom percentage (0–100)                             |
 | `.margin(String)` | `margin.<css-margin>` | Expand/contract viewport boundary (CSS-margin syntax) |
 
 ### Resize
@@ -351,16 +371,16 @@ div(.xResize.resize("width = $width; height = $height", modifiers: [.document]))
 
 ```html
 <div x-resize="width = $width; height = $height">
-    <p x-text="'Width: ' + width + 'px'"></p>
-    <p x-text="'Height: ' + height + 'px'"></p>
+  <p x-text="'Width: ' + width + 'px'"></p>
+  <p x-text="'Height: ' + height + 'px'"></p>
 </div>
 <div x-resize.document="width = $width; height = $height">...</div>
 ```
 
 **Modifier reference:**
 
-| Modifier | Raw value | Notes |
-|----------|-----------|-------|
+| Modifier    | Raw value  | Notes                                              |
+| ----------- | ---------- | -------------------------------------------------- |
 | `.document` | `document` | Observe the document instead of a specific element |
 
 ### Persist
@@ -399,20 +419,21 @@ div(.x.data("{ count: $persist(0).using(sessionStorage) }")) {
 
 ```html
 <div x-data="{ count: $persist(0) }">
-    <button x-on:click="count++">Increment</button>
-    <span x-text="count"></span>
+  <button x-on:click="count++">Increment</button>
+  <span x-text="count"></span>
 </div>
 <div x-data="{ count: $persist(0).as('my-count') }">
-    <button x-on:click="count++">Increment</button>
-    <span x-text="count"></span>
+  <button x-on:click="count++">Increment</button>
+  <span x-text="count"></span>
 </div>
 <div x-data="{ count: $persist(0).using(sessionStorage) }">
-    <button x-on:click="count++">Increment</button>
-    <span x-text="count"></span>
+  <button x-on:click="count++">Increment</button>
+  <span x-text="count"></span>
 </div>
 ```
 
 **Notes:**
+
 - Persist is **not a directive**, so there is no `HTMLAttribute` helper. Write `$persist(...)` as a JS string in your `x-data` value.
 - `.as(...)` and `.using(...)` are **JavaScript method calls** on the `$persist(...)` return value, not HTML modifiers — they cannot be type-safe in Swift.
 - `$persist` works with primitives, arrays, and objects. If you change the type of a persisted value, clear its localStorage entry first.
@@ -468,14 +489,15 @@ div(.xFocus.trap("open", modifiers: [.inert, .noscroll, .noreturn])) { ... }
 
 **Modifier reference:**
 
-| Modifier | Raw value | Notes |
-|----------|-----------|-------|
-| `.inert` | `inert` | Mark other page elements `aria-hidden="true"` while trapped |
-| `.noscroll` | `noscroll` | Block page scrolling while trapped |
-| `.noreturn` | `noreturn` | Don't return focus on untrap |
-| `.noautofocus` | `noautofocus` | Don't auto-focus the first focusable element |
+| Modifier       | Raw value     | Notes                                                       |
+| -------------- | ------------- | ----------------------------------------------------------- |
+| `.inert`       | `inert`       | Mark other page elements `aria-hidden="true"` while trapped |
+| `.noscroll`    | `noscroll`    | Block page scrolling while trapped                          |
+| `.noreturn`    | `noreturn`    | Don't return focus on untrap                                |
+| `.noautofocus` | `noautofocus` | Don't auto-focus the first focusable element                |
 
 **Notes:**
+
 - The Focus plugin also provides a `$focus` magic (`.next()`, `.previous()`, `.wrap()`, `.first()`, `.last()`, etc.) used as JS strings inside `x-on` handlers — no Swift helper needed.
 - The Focus plugin was previously called "Trap" — `x-trap` and its modifiers are unchanged.
 
@@ -522,12 +544,13 @@ p(.x.show("expanded"), .xCollapse.collapse(modifiers: [.duration(500), .min(50)]
 
 **Modifier reference:**
 
-| Modifier | Raw value | Notes |
-|----------|-----------|-------|
-| `.duration(Int)` | `duration.Nms` | Animation duration in milliseconds |
-| `.min(Int)` | `min.Npx` | Minimum collapsed height in pixels (cuts off rather than fully hides) |
+| Modifier         | Raw value      | Notes                                                                 |
+| ---------------- | -------------- | --------------------------------------------------------------------- |
+| `.duration(Int)` | `duration.Nms` | Animation duration in milliseconds                                    |
+| `.min(Int)`      | `min.Npx`      | Minimum collapsed height in pixels (cuts off rather than fully hides) |
 
 **Notes:**
+
 - `x-collapse` can only exist on an element that already has `x-show`. It animates the height property when `x-show` toggles visibility.
 - `x-collapse` has no value — it only accepts modifiers.
 
@@ -599,31 +622,32 @@ div(.x.show("open"), .xAnchor.anchor("document.getElementById('trigger')")) {
 
 **Positioning modifiers:**
 
-| Modifier | Raw value | Notes |
-|----------|-----------|-------|
-| `.top` | `top` | Above the reference, centered |
-| `.topStart` | `top-start` | Above the reference, aligned to the start |
-| `.topEnd` | `top-end` | Above the reference, aligned to the end |
-| `.bottom` | `bottom` | Below the reference, centered |
-| `.bottomStart` | `bottom-start` | Below the reference, aligned to the start |
-| `.bottomEnd` | `bottom-end` | Below the reference, aligned to the end |
-| `.left` | `left` | Left of the reference, centered |
-| `.leftStart` | `left-start` | Left of the reference, aligned to the start |
-| `.leftEnd` | `left-end` | Left of the reference, aligned to the end |
-| `.right` | `right` | Right of the reference, centered |
-| `.rightStart` | `right-start` | Right of the reference, aligned to the start |
-| `.rightEnd` | `right-end` | Right of the reference, aligned to the end |
+| Modifier       | Raw value      | Notes                                        |
+| -------------- | -------------- | -------------------------------------------- |
+| `.top`         | `top`          | Above the reference, centered                |
+| `.topStart`    | `top-start`    | Above the reference, aligned to the start    |
+| `.topEnd`      | `top-end`      | Above the reference, aligned to the end      |
+| `.bottom`      | `bottom`       | Below the reference, centered                |
+| `.bottomStart` | `bottom-start` | Below the reference, aligned to the start    |
+| `.bottomEnd`   | `bottom-end`   | Below the reference, aligned to the end      |
+| `.left`        | `left`         | Left of the reference, centered              |
+| `.leftStart`   | `left-start`   | Left of the reference, aligned to the start  |
+| `.leftEnd`     | `left-end`     | Left of the reference, aligned to the end    |
+| `.right`       | `right`        | Right of the reference, centered             |
+| `.rightStart`  | `right-start`  | Right of the reference, aligned to the start |
+| `.rightEnd`    | `right-end`    | Right of the reference, aligned to the end   |
 
 **Other modifiers:**
 
-| Modifier | Raw value | Notes |
-|----------|-----------|-------|
-| `.fixed` | `fixed` | Use `position: fixed` (escapes `overflow: hidden` containers) |
-| `.offset(Int)` | `offset.N` | Spacing in pixels between anchored and reference element |
-| `.noflip` | `noflip` | Don't auto-flip when there's no room in the chosen direction |
-| `.noStyle` | `no-style` | Don't apply positioning styles; access them via `$anchor.x` / `$anchor.y` in `x-bind:style` |
+| Modifier       | Raw value  | Notes                                                                                       |
+| -------------- | ---------- | ------------------------------------------------------------------------------------------- |
+| `.fixed`       | `fixed`    | Use `position: fixed` (escapes `overflow: hidden` containers)                               |
+| `.offset(Int)` | `offset.N` | Spacing in pixels between anchored and reference element                                    |
+| `.noflip`      | `noflip`   | Don't auto-flip when there's no room in the chosen direction                                |
+| `.noStyle`     | `no-style` | Don't apply positioning styles; access them via `$anchor.x` / `$anchor.y` in `x-bind:style` |
 
 **Notes:**
+
 - `x-anchor` is a thin wrapper around [Floating UI](https://floating-ui.com/). For advanced configuration not exposed by the modifiers, use `x-anchor.noStyle` and apply styles yourself via `x-bind:style` and the `$anchor` magic.
 - A `transform`, `filter`, `perspective`, `backdrop-filter`, `will-change`, or `contain` on any ancestor creates a new containing block for `position: fixed` descendants. `.fixed` will behave like `position: absolute` relative to that ancestor.
 
@@ -701,67 +725,233 @@ ul(.xSort.sort, .xSort.config("{ animation: 0 }")) {
 
 ```html
 <ul x-sort>
-    <li x-sort:item="1">foo</li>
-    <li x-sort:item="2">bar</li>
-    <li x-sort:item="3">baz</li>
+  <li x-sort:item="1">foo</li>
+  <li x-sort:item="2">bar</li>
+  <li x-sort:item="3">baz</li>
 </ul>
 
 <ul x-sort="alert($item + ' - ' + $position)">
-    <li x-sort:item="1">foo</li>
-    <li x-sort:item="2">bar</li>
-    <li x-sort:item="3">baz</li>
+  <li x-sort:item="1">foo</li>
+  <li x-sort:item="2">bar</li>
+  <li x-sort:item="3">baz</li>
 </ul>
 
 <ul x-sort="handle" x-sort:group="todos">
-    <li x-sort:item="1">foo</li>
-    <li x-sort:item="2">bar</li>
-    <li x-sort:item="3">baz</li>
+  <li x-sort:item="1">foo</li>
+  <li x-sort:item="2">bar</li>
+  <li x-sort:item="3">baz</li>
 </ul>
 
 <ol x-sort="handle" x-sort:group="todos">
-    <li x-sort:item="4">foo</li>
-    <li x-sort:item="5">bar</li>
-    <li x-sort:item="6">baz</li>
+  <li x-sort:item="4">foo</li>
+  <li x-sort:item="5">bar</li>
+  <li x-sort:item="6">baz</li>
 </ol>
 
 <ul x-sort>
-    <li x-sort:item="1">
-        <span x-sort:handle> - </span>foo
-    </li>
-    <li x-sort:item="2">
-        <span x-sort:handle> - </span>bar
-    </li>
+  <li x-sort:item="1"><span x-sort:handle> - </span>foo</li>
+  <li x-sort:item="2"><span x-sort:handle> - </span>bar</li>
 </ul>
 
 <ul x-sort>
-    <li x-sort:item="1">
-        foo
-        <button x-sort:ignore>Edit</button>
-    </li>
+  <li x-sort:item="1">
+    foo
+    <button x-sort:ignore>Edit</button>
+  </li>
 </ul>
 
 <ul x-sort.ghost>
-    <li x-sort:item="1">foo</li>
-    <li x-sort:item="2">bar</li>
+  <li x-sort:item="1">foo</li>
+  <li x-sort:item="2">bar</li>
 </ul>
 
 <ul x-sort x-sort:config="{ animation: 0 }">
-    <li x-sort:item="1">foo</li>
+  <li x-sort:item="1">foo</li>
 </ul>
 ```
 
 **Modifier reference:**
 
-| Modifier | Raw value | Notes |
-|----------|-----------|-------|
-| `.ghost` | `ghost` | Show a ghost of the dragged element in its place (default: empty hole) |
+| Modifier | Raw value | Notes                                                                  |
+| -------- | --------- | ---------------------------------------------------------------------- |
+| `.ghost` | `ghost`   | Show a ghost of the dragged element in its place (default: empty hole) |
 
 **Notes:**
+
 - The Sort handler is called every time sort order changes. Inside the handler, `$item` is the moved item's key (from `x-sort:item`) and `$position` is its new index (starting at `0`). The handler can also be a function reference that receives `(item, position)` as arguments.
 - `x-sort:item` keys are typically numeric (`"1"`, `"2"`, …) but can be any string used to identify the item.
 - `x-sort:group` lets you drag items between lists. When using `.as` handlers with cross-group drag, only the destination list's handler is called.
 - `x-sort:config` accepts any [SortableJS options](https://github.com/SortableJS/Sortable?tab=readme-ov-file#options). Be aware that overwriting `handle`, `group`, `filter`, `onSort`, `onStart`, or `onEnd` may break functionality.
 - While dragging, Alpine adds a `.sorting` class to `<body>` — useful for conditional CSS like `body.sorting #warning { display: block; }`.
+
+### Morph
+
+[Morph](https://alpinejs.dev/plugins/morph) lets you update a section of the DOM with new HTML while preserving Alpine state, browser focus, scroll position, and form input values. Useful for server-rendered updates (Livewire, LiveView) or any time you want to swap content without losing state.
+
+Unlike the other plugins, Morph provides **two factory functions** that generate a `<script>` element with the right JS to call `Alpine.morph` or `Alpine.morphBetween`.
+
+**`setupMorph`** — replaces a single element with new HTML on a trigger event.
+
+```swift
+setupMorph(
+    trigger: "#refresh-btn",
+    target: "#user-card",
+    event: "click"
+) {
+    div(.x.data("{ name: 'Updated' }")) {
+        h2 { "Updated content" }
+    }
+}
+```
+
+**Generated HTML:**
+
+```html
+<script>
+  document.querySelector('#refresh-btn').addEventListener('click', async () => {
+    Alpine.morph(
+      document.querySelector('#user-card'),
+      `<div x-data="{ name: 'Updated' }"><h2>Updated content</h2></div>`,
+    )
+  })
+</script>
+```
+
+**`setupMorphBetween`** — morphs the content between two marker nodes (typically HTML comments).
+
+```swift
+// In your body, place markers around the content you want to update:
+// <!--list-start-->
+// <li>item</li>
+// <!--list-end-->
+
+setupMorphBetween(
+    trigger: "#refresh",
+    startMarker: "<!--list-start-->",
+    endMarker: "<!--list-end-->",
+    event: "click"
+) {
+    li { "new item" }
+}
+```
+
+The generated JS includes a `findMorphMarker` helper that handles both CSS selectors (`#start`, `.end`) and HTML comment markers (`<!--start-->`, `<!--end-->`), so you can use whichever style matches your markup.
+
+**Generated HTML:**
+
+```html
+<script>
+  const findMorphMarker = (marker) => {
+    let el = document.querySelector(marker)
+    if (el) return el
+    if (marker.startsWith('<!--') && marker.endsWith('-->')) {
+      const text = marker.slice(4, -3).trim()
+      const walker = document.createTreeWalker(
+        document.body,
+        NodeFilter.SHOW_COMMENT,
+      )
+      let node
+      while ((node = walker.nextNode())) {
+        if (node.nodeValue && node.nodeValue.trim() === text) return node
+      }
+    }
+    return null
+  }
+  document.querySelector('#refresh').addEventListener('click', async () => {
+    Alpine.morphBetween(
+      findMorphMarker('<!--list-start-->'),
+      findMorphMarker('<!--list-end-->'),
+      `<li>new item</li>`,
+    )
+  })
+</script>
+```
+
+**Options (lifecycle hooks + key + lookahead):**
+
+Both functions accept a `MorphOptions` builder for configuring the morph:
+
+```swift
+setupMorph(
+    trigger: "#btn",
+    target: "#list",
+    event: "click"
+) {
+    .updating("console.log('updating', el)")
+    .key("(el) => el.id")
+    .lookahead()
+} returning: {
+    ul { li { "item" } }
+}
+```
+
+**Available options** (same for both `setupMorph` and `setupMorphBetween`):
+
+| Method            | Alpine.js option                         | Description                          |
+| ----------------- | ---------------------------------------- | ------------------------------------ |
+| `.updating("js")` | `updating(el, toEl, childrenOnly, skip)` | Called before patching               |
+| `.updated("js")`  | `updated(el, toEl)`                      | Called after patching                |
+| `.removing("js")` | `removing(el, skip)`                     | Called before removing               |
+| `.removed("js")`  | `removed(el)`                            | Called after removing                |
+| `.adding("js")`   | `adding(el, skip)`                       | Called before adding                 |
+| `.added("js")`    | `added(el)`                              | Called after adding                  |
+| `.key("js")`      | `key(el)`                                | Function returning the element's key |
+| `.lookahead()`    | `lookahead: true`                        | Enable lookahead algorithm           |
+
+**Dynamic HTML (fetch):**
+
+Use the `jsCommand` parameter to dynamically compute the HTML (e.g., from a fetch). The closure must assign the HTML string to a variable named `html`:
+
+```swift
+setupMorph(
+    trigger: "#btn",
+    target: "#list",
+    event: "click"
+) {
+    "const html = await fetch('/api/list').then(r => r.text())"
+} returning: {
+    div { "default" }
+}
+```
+
+**All three trailing closures (options + jsCommand + returning):**
+
+```swift
+setupMorph(
+    trigger: "#btn",
+    target: "#list",
+    event: "click"
+) {
+    .updating("console.log('updating', el)")
+    .key("(el) => el.id")
+    .lookahead()
+} jsCommand: {
+    "const html = await fetch('/api/list').then(r => r.text())"
+} returning: {
+    div { "default" }
+}
+```
+
+**Without trigger (imperative):**
+
+Both functions have overloads without `trigger`/`event` parameters — they emit a script that runs the morph once on page load:
+
+```swift
+setupMorph(target: "#content") {
+    div { "initial content" }
+}
+
+setupMorphBetween(
+    startMarker: "<!--start-->",
+    endMarker: "<!--end-->"
+) {
+    li { "initial" }
+}
+```
+
+**Notes:**
+
+- For more complex morph scenarios (e.g., custom element resolution, exotic comment markers), use a raw `<script>` block instead.
 
 ## Play with it
 
@@ -780,11 +970,11 @@ The package ships two libraries:
     - `x-for` (`.loop`), `x-transition` (all phases), `x-effect`, `x-ignore`, `x-ref`, `x-cloak`
     - `x-teleport`, `x-if` (`.when`), `x-id`
   - **Global helpers** — `registerGlobal(_:on:action:)` for `Alpine.data()`, `Alpine.store()`, `Alpine.bind()` (see [Globals](#globals))
-- **`ElementaryAlpinePlugins`** — Alpine.js plugin wrappers (see [Plugins](#plugins)). Currently ships **Mask** (`.xMask.pattern` / `.xMask.dynamic`), **Intersect** (`.xIntersect.intersect` / `.enter` / `.leave`), **Resize** (`.xResize.resize`), **Persist** (the `$persist` magic — no directive surface), **Focus** (`.xFocus.trap`), **Collapse** (`.xCollapse.collapse`), **Anchor** (`.xAnchor.anchor`), and **Sort** (`.xSort.sort` / `.item` / `.group` / `.handle` / `.ignore` / `.config`).
+- **`ElementaryAlpinePlugins`** — Alpine.js plugin wrappers (see [Plugins](#plugins)). Currently ships **Mask** (`.xMask.pattern` / `.xMask.dynamic`), **Intersect** (`.xIntersect.intersect` / `.enter` / `.leave`), **Resize** (`.xResize.resize`), **Persist** (the `$persist` magic — no directive surface), **Focus** (`.xFocus.trap`), **Collapse** (`.xCollapse.collapse`), **Anchor** (`.xAnchor.anchor`), **Sort** (`.xSort.sort` / `.item` / `.group` / `.handle` / `.ignore` / `.config`), and **Morph** (`setupMorph` + `setupMorphBetween`).
 
 ## Future directions
 
-- Remaining plugin wrapper: Morph (Alpine.morph() global — no directive surface)
+- All 9 official Alpine.js plugins are now documented. Future work: example apps and ecosystem integrations.
 
 PRs welcome.
 

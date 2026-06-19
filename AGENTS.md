@@ -58,10 +58,12 @@ Sources/ElementaryAlpinePlugins/
 ├── AlpineAnchorModifier.swift             # `AnchorModifier` enum
 ├── HTMLAttribute+AlpineSort.swift         # `.xSort.sort(_:modifiers:)`, `.item(...)`, `.group(...)`, `.handle`, `.ignore`, `.config(...)`
 ├── AlpineSortModifier.swift               # `SortModifier` enum
+├── HTMLAttribute+AlpineMorph.swift         # `setupMorph(...)` (8 overloads) + `MorphOptions` struct (lifecycle hooks, key, lookahead)
+├── HTMLAttribute+AlpineMorphBetween.swift # `setupMorphBetween(...)` (8 overloads, with `findMorphMarker` helper for HTML comment markers)
 └── (per-plugin file per Alpine.js plugin)
 ```
 
-> **Plugins with no directive surface** (e.g. Persist, Morph) ship as docs only — no Swift source, no `HTMLAttribute` helper. Persist's API is the `$persist(...)` magic, used as a JS string in `x-data` values.
+> **Plugins with no directive surface** (e.g. Persist) ship as docs only — no Swift source, no `HTMLAttribute` helper. Persist's API is the `$persist(...)` magic, used as a JS string in `x-data` values. Morph has no directives but ships `setupMorph` / `setupMorphBetween` as full Swift APIs that generate the JS to call `Alpine.morph` / `Alpine.morphBetween`.
 
 **Core (17 directives) under `HTMLAttribute.x`:**
 - `x-data`, `x-init` (`.setup`), `x-show`, `x-bind`/`x-bind:class`/`x-bind:style`
@@ -113,6 +115,7 @@ Directives accepting modifiers:
 | `x-sort:handle` | `.xSort.handle` | — (no value, no modifiers) |
 | `x-sort:ignore` | `.xSort.ignore` | — (no value, no modifiers) |
 | `x-sort:config` | `.xSort.config(_:)` | — (no modifiers) |
+| `x-morph` | `setupMorph(...)` / `setupMorphBetween(...)` | No modifiers (lifecycle hooks via `MorphOptions`) |
 
 ## Globals API
 
