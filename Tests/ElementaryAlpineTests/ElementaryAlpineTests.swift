@@ -454,6 +454,72 @@ final class ElementaryAlpineGlobalsTests: XCTestCase {
     }
 }
 
+final class ElementaryAlpineSetupTests: XCTestCase {
+    func testSetupAlpineNoPlugins() {
+        let html = renderToString {
+            setupAlpine()
+        }
+        XCTAssertEqual(
+            html,
+            #"<script src="https://cdn.jsdelivr.net/npm/alpinejs@3.15.12/dist/cdn.min.js" defer></script>"#
+        )
+    }
+
+    func testSetupAlpineCustomVersionNoPlugins() {
+        let html = renderToString {
+            setupAlpine(version: "3.14.0")
+        }
+        XCTAssertEqual(
+            html,
+            #"<script src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.0/dist/cdn.min.js" defer></script>"#
+        )
+    }
+
+    func testSetupAlpineWithSinglePlugin() {
+        let html = renderToString {
+            setupAlpine(plugins: [.mask])
+        }
+        XCTAssertEqual(
+            html,
+            #"""
+            <script src="https://cdn.jsdelivr.net/npm/@alpinejs/mask@3.15.12/dist/cdn.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/alpinejs@3.15.12/dist/cdn.min.js" defer></script>
+            """#
+        )
+    }
+
+    func testSetupAlpineWithMultiplePlugins() {
+        let html = renderToString {
+            setupAlpine(plugins: [.mask, .focus, .morph])
+        }
+        XCTAssertTrue(html.contains(#"<script src="https://cdn.jsdelivr.net/npm/@alpinejs/mask@3.15.12/dist/cdn.min.js" defer></script>"#))
+        XCTAssertTrue(html.contains(#"<script src="https://cdn.jsdelivr.net/npm/@alpinejs/focus@3.15.12/dist/cdn.min.js" defer></script>"#))
+        XCTAssertTrue(html.contains(#"<script src="https://cdn.jsdelivr.net/npm/@alpinejs/morph@3.15.12/dist/cdn.min.js" defer></script>"#))
+        XCTAssertTrue(html.contains(#"<script src="https://cdn.jsdelivr.net/npm/alpinejs@3.15.12/dist/cdn.min.js" defer></script>"#))
+    }
+
+    func testSetupAlpinePluginOrderBeforeAlpineCore() {
+        let html = renderToString {
+            setupAlpine(plugins: [.mask, .focus])
+        }
+        let maskRange = html.range(of: "@alpinejs/mask@3.15.12")
+        let focusRange = html.range(of: "@alpinejs/focus@3.15.12")
+        let alpineRange = html.range(of: "alpinejs@3.15.12/dist/cdn.min.js")
+        XCTAssertNotNil(maskRange)
+        XCTAssertNotNil(focusRange)
+        XCTAssertNotNil(alpineRange)
+        XCTAssertLessThan(maskRange!.lowerBound, alpineRange!.lowerBound, "mask script must come before Alpine core")
+        XCTAssertLessThan(focusRange!.lowerBound, alpineRange!.lowerBound, "focus script must come before Alpine core")
+    }
+
+    func testSetupAlpineCustomVersionWithPlugins() {
+        let html = renderToString {
+            setupAlpine(version: "3.14.0", plugins: [.morph])
+        }
+        XCTAssertTrue(html.contains(#"@alpinejs/morph@3.14.0"#))
+        XCTAssertTrue(html.contains(#"alpinejs@3.14.0/dist/cdn.min.js"#))
+    }
+}
+
 private func renderToString(@HTMLBuilder _ content: () -> some HTML) -> String {
     content().render()
 }

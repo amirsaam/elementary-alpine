@@ -100,6 +100,57 @@ For Hummingbird/Vapor examples, add the file as a resource in your `Package.swif
 )
 ```
 
+## Setup
+
+The `setupAlpine(version:plugins:)` helper generates the `<script>` tags needed to install Alpine.js and any plugins from a CDN. Plugin scripts are emitted first (per Alpine.js requirements), followed by Alpine core. This replaces the manual `script { ... }` chain in the `## Plugins` section below.
+
+**Without plugins:**
+
+```swift
+var head: some HTML {
+    meta(.charset(.utf8))
+    setupAlpine()
+}
+```
+
+**With plugins:**
+
+```swift
+var head: some HTML {
+    meta(.charset(.utf8))
+    setupAlpine(plugins: [.mask, .focus, .morph])
+}
+```
+
+**Generated HTML:**
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/@alpinejs/mask@3.15.12/dist/cdn.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/@alpinejs/focus@3.15.12/dist/cdn.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/@alpinejs/morph@3.15.12/dist/cdn.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/alpinejs@3.15.12/dist/cdn.min.js" defer></script>
+```
+
+**Available plugins** (use the `AlpinePlugin` enum cases):
+
+| Plugin | Enum case | Source |
+|--------|-----------|--------|
+| Mask | `.mask` | `@alpinejs/mask` |
+| Intersect | `.intersect` | `@alpinejs/intersect` |
+| Resize | `.resize` | `@alpinejs/resize` |
+| Persist | `.persist` | `@alpinejs/persist` |
+| Focus | `.focus` | `@alpinejs/focus` |
+| Collapse | `.collapse` | `@alpinejs/collapse` |
+| Anchor | `.anchor` | `@alpinejs/anchor` |
+| Sort | `.sort` | `@alpinejs/sort` |
+| Morph | `.morph` | `@alpinejs/morph` |
+
+**Custom version:**
+
+```swift
+setupAlpine(version: "3.14.0", plugins: [.focus])
+```
+
 ## Modifiers
 
 Directives that support modifiers take a `modifiers:` array parameter with a typed enum value:

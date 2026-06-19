@@ -143,6 +143,31 @@ var head: some HTML {
 }
 ```
 
+## Setup API
+
+`ElementaryAlpine` provides a free `setupAlpine(version:plugins:)` helper that emits the `<script>` tags needed to install Alpine.js and any specified plugins from a CDN. Plugin scripts are emitted first (per Alpine.js requirements), followed by Alpine core. Defaults: `version = "3.15.12"`, `plugins = []`.
+
+```swift
+public enum AlpinePlugin: String, CaseIterable, Hashable, Sendable {
+    case mask, intersect, resize, persist, focus, collapse, anchor, sort, morph
+}
+
+public func setupAlpine(
+    version: String = "3.15.12",
+    plugins: [AlpinePlugin] = []
+) -> some HTML
+```
+
+**Usage in head:**
+
+```swift
+var head: some HTML {
+    meta(.charset(.utf8))
+    script(.src("https://cdn.jsdelivr.net/npm/alpinejs@3.15.12/dist/cdn.min.js"), .defer) {}
+    setupAlpine(plugins: [.mask, .focus, .morph])
+}
+```
+
 ## Swift Keyword Escapes
 
 To avoid backticks in user code, reserved Swift keywords are renamed:
